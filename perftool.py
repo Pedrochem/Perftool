@@ -5,9 +5,9 @@ import socket
 import sys
 import argparse
 from random import randint
+import statistics as st
 
 
-data_payload = 2048
 backlog = 5
 
 
@@ -45,6 +45,7 @@ def tcp_server(port, address, buffer):
             while True:
                 print ("Waiting to receive message from client")
                 data = client.recv(buffer)
+                time.sleep(1)
                 if not data:
                     break
                 print ("Data: %s" %data)
@@ -72,13 +73,17 @@ def tcp_client(port, address, interval, num, buffer):
     print(initial_size,increment,final_size)
 
     # Send data
+    n = 1
     while initial_size<=final_size:
+        latency_lst = []
+        throughput_lst = []
         print('Data size = ',initial_size)
-        for _ in range(num):
+        for i in range(num):
             try:
-                time.sleep(1)
-                message = "message " + "aaaaa" * randint(1,100)
-                print ("Sending %s" % message)
+                #time.sleep(1)
+                message = 'a' * initial_size
+                # print ("Sending %s" % message)
+                start_time = time.time()
                 sock.sendall(message.encode('utf-8'))
                 # Look for the response
                 amount_received = 0
@@ -86,12 +91,20 @@ def tcp_client(port, address, interval, num, buffer):
                 while amount_received < amount_expected:
                     data = sock.recv(buffer)
                     amount_received += len(data)
-                    print('received = ',amount_received)
-                    print ("Received: %s" % data)
+                    # print('received = ',amount_received)
+                    # print ("Received: %s" % data)
+                end_time = time.time()
+                rtp = end_time - start_time
+                latency_lst.append(rtp / 2)
+                throughput_lst.append(len(message) / rtp * 100)
             except socket.error as e:
                 print ("Socket error: %s" %str(e))
             except Exception as e:
                 print ("Other exception: %s" %str(e))
+        print(latency_lst)
+        print(throughput_lst)
+        print('%d , %d, %f, %f, %f, %f' % (n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst)))
+        n+=1
         initial_size+=increment
               
     print ("Closing connection to the server")
