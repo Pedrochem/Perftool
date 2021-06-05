@@ -81,8 +81,8 @@ def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
                 print ("Socket error: %s" %str(e))
             except Exception as e:
                 print ("Other exception: %s" %str(e))
-        print(latency_lst)
-        print(throughput_lst)
+        # print(latency_lst)
+        # print(throughput_lst)
         print('%d, %d, %f, %f, %f, %f' % (n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst)))
         n+=1
         initial_size+=increment
@@ -112,14 +112,14 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     server_address = (address, port)
-    print ("Connecting to %s port %s" % server_address)
+    # print ("Connecting to %s port %s" % server_address)
 
     n = 1
     while(initial_size<=final_size):   
         latency_lst = []
         throughput_lst = []
         lost = 0
-        print('Data size = ',initial_size)
+        # print('Data size = ',initial_size)
         for i in range(num): 
             try:
                 message = 'a' * initial_size
@@ -144,14 +144,14 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
             throughput_lst.append(0)
 
         send_porcentage = (n - lost) / n
-        print('Latency list = ',latency_lst)
-        print('Throughput list = ',throughput_lst)
-        print('Lost porcentage = ',send_porcentage)        
+        # print('Latency list = ',latency_lst)
+        # print('Throughput list = ',throughput_lst)
+        # print('Lost porcentage = ',send_porcentage)        
         print('{},{},{:f},{:f},{:f},{:f},{:f},{:f}'.format(n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst),send_porcentage,jitter))
 
         n+=1
         initial_size+=increment
-    print ("Closing connection to the server")
+    # print ("Closing connection to the server")
     sock.close()
 
 if __name__ == '__main__':
@@ -177,15 +177,15 @@ if __name__ == '__main__':
             print ('Invalid arg value for w (range)')
             sys.exit()
 
-    print('client = ',client)
-    print('server = ',server)
-    print('tcp = ',tcp)
-    print('udp = ',udp)
-    print('port = ',port)
-    print('address = ',address)
-    print('interval = ',interval)
-    print('num = ',num)
-    print('buffer = ',buffer)
+    # print('client = ',client)
+    # print('server = ',server)
+    # print('tcp = ',tcp)
+    # print('udp = ',udp)
+    # print('port = ',port)
+    # print('address = ',address)
+    # print('interval = ',interval)
+    # print('num = ',num)
+    # print('buffer = ',buffer)
 
     if server:
         if tcp:
