@@ -7,9 +7,7 @@ import argparse
 from random import randint
 import statistics as st
 
-
 backlog = 5
-
 
 def read_args():
     parser = argparse.ArgumentParser(description='')
@@ -29,15 +27,11 @@ def read_args():
     return parser.parse_args()
 
 def tcp_server(port, address, buffer):
-    # Create a TCP socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    # Enable reuse address/port
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        # Bind the socket to the port
         server_address = (address, port)
         print ("Starting up echo server  on %s port %s" % server_address)
         sock.bind(server_address)
-        # Listen to clients, backlog argument specifies the max no. of queued connections
         sock.listen(backlog)
         client, address = sock.accept()
         with client:
@@ -45,34 +39,21 @@ def tcp_server(port, address, buffer):
             while True:
                 print ("Waiting to receive message from client")
                 data = client.recv(buffer)
-                time.sleep(1)
+                #time.sleep(1)
                 if not data:
                     break
                 print ("Data: %s" %data)
                 client.sendall(data)
                 print ("sent %d bytes back to %s" % (len(data), address))
 
-def tcp_client(port, address, interval, num, buffer):
-    # Create a TCP/IP socket    
+def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # Connect the socket to the server
     server_address = (address, port)
     print ("Connecting to %s port %s" % server_address)
     sock.connect(server_address)
-    
-    #defines data size interval
-    try:
-        ini, fin, inc = interval.split(',')  
-        initial_size = int(ini)
-        increment = int(inc)
-        final_size = int(fin)     
-    except Exception as e:
-        print ('Invalid arg value for w (range)')
-        sys.exit()
 
     print(initial_size,increment,final_size)
 
-    # Send data
     n = 1
     while initial_size<=final_size:
         latency_lst = []
@@ -85,13 +66,12 @@ def tcp_client(port, address, interval, num, buffer):
                 # print ("Sending %s" % message)
                 start_time = time.time()
                 sock.sendall(message.encode('utf-8'))
-                # Look for the response
                 amount_received = 0
                 amount_expected = len(message)
                 while amount_received < amount_expected:
                     data = sock.recv(buffer)
                     amount_received += len(data)
-                    # print('received = ',amount_received)
+                    # print('Received = ',amount_received)
                     # print ("Received: %s" % data)
                 end_time = time.time()
                 rtp = end_time - start_time
@@ -103,7 +83,7 @@ def tcp_client(port, address, interval, num, buffer):
                 print ("Other exception: %s" %str(e))
         print(latency_lst)
         print(throughput_lst)
-        print('%d , %d, %f, %f, %f, %f' % (n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst)))
+        print('%d, %d, %f, %f, %f, %f' % (n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst)))
         n+=1
         initial_size+=increment
               
@@ -111,11 +91,68 @@ def tcp_client(port, address, interval, num, buffer):
     sock.close()
 
 def udp_server(port, address, buffer):
-    return None
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        server_address = (address, port)
+        print ("Starting up echo server on %s port %s" % server_address)
+        sock.bind(server_address)
+        
+        while True:
+            print ("Waiting to receive message from client")
+            data, address = sock.recvfrom(buffer)
+            if not data:
+                break
+            print ("received %s bytes from %s" % (len(data), address))
+            print ("Data: %s" %data)
+           
+            #time.sleep(2)
+            sent = sock.sendto(data, address)
+            print ("sent %s bytes back to %s" % (sent, address))
 
-def udp_client(port, address, interval, num, buffer):
-    return None
+def udp_client(port, address, num, buffer, initial_size, increment, final_size):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+    server_address = (address, port)
+    print ("Connecting to %s port %s" % server_address)
+
+    n = 1
+    while(initial_size<=final_size):   
+        latency_lst = []
+        throughput_lst = []
+        lost = 0
+        print('Data size = ',initial_size)
+        for i in range(num): 
+            try:
+                message = 'a' * initial_size
+                #print ("Sending %s" % message)
+                start_time = time.time()
+                sent = sock.sendto(message.encode('utf-8'), server_address)
+                sock.settimeout(1)
+
+                data, server = sock.recvfrom(buffer)
+                # print ("Received %s" % data)
+                end_time = time.time()
+                rtp = end_time - start_time
+                latency_lst.append(rtp / 2)
+                throughput_lst.append(len(message) / rtp * 100)
+
+            except socket.timeout:
+                lost+=1
+
+        jitter = st.stdev(latency_lst)
+        for _ in range (lost):
+            latency_lst.append(0)
+            throughput_lst.append(0)
+
+        send_porcentage = (n - lost) / n
+        print('Latency list = ',latency_lst)
+        print('Throughput list = ',throughput_lst)
+        print('Lost porcentage = ',send_porcentage)        
+        print('{},{},{:f},{:f},{:f},{:f},{:f},{:f}'.format(n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst),send_porcentage,jitter))
+
+        n+=1
+        initial_size+=increment
+    print ("Closing connection to the server")
+    sock.close()
 
 if __name__ == '__main__':
     
@@ -129,6 +166,16 @@ if __name__ == '__main__':
     interval = args.interval
     num = args.num
     buffer = args.buffer
+
+    if interval:
+        try:
+            ini, fin, inc = interval.split(',')  
+            initial_size = int(ini)
+            increment = int(inc)
+            final_size = int(fin)     
+        except Exception as e:
+            print ('Invalid arg value for w (range)')
+            sys.exit()
 
     print('client = ',client)
     print('server = ',server)
@@ -147,9 +194,9 @@ if __name__ == '__main__':
             udp_server(port, address, buffer)
     elif client:
         if tcp:
-            tcp_client(port, address, interval, num, buffer)
+            tcp_client(port, address, num, buffer,initial_size,increment,final_size)
         elif udp:
-            udp_client(port, address, interval, num, buffer)
+            udp_client(port, address, num, buffer,initial_size,increment,final_size)
             
 
 
