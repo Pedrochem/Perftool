@@ -64,7 +64,7 @@ def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
                 #time.sleep(1)
                 message = 'a' * initial_size
                 # print ("Sending %s" % message)
-                start_time = time.time()
+                start_time = time.time() * 1000
                 sock.sendall(message.encode('utf-8'))
                 amount_received = 0
                 amount_expected = len(message)
@@ -73,17 +73,17 @@ def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
                     amount_received += len(data)
                     # print('Received = ',amount_received)
                     # print ("Received: %s" % data)
-                end_time = time.time()
+                end_time = time.time() * 1000
                 rtp = end_time - start_time
                 latency_lst.append(rtp / 2)
-                throughput_lst.append(len(message) / rtp * 100)
+                throughput_lst.append(len((message)* 1000) / rtp)
             except socket.error as e:
                 print ("Socket error: %s" %str(e))
             except Exception as e:
                 print ("Other exception: %s" %str(e))
         # print(latency_lst)
         # print(throughput_lst)
-        print('%d, %d, %f, %f, %f, %f' % (n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst)))
+        print('%d, %d, %.2f, %.2f, %.2f, %.2f' % (n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst)))
         n+=1
         initial_size+=increment
               
@@ -124,30 +124,34 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
             try:
                 message = 'a' * initial_size
                 #print ("Sending %s" % message)
-                start_time = time.time()
+                start_time = time.time() * 1000
                 sent = sock.sendto(message.encode('utf-8'), server_address)
                 sock.settimeout(1)
 
                 data, server = sock.recvfrom(buffer)
                 # print ("Received %s" % data)
-                end_time = time.time()
+                end_time = time.time() * 1000
                 rtp = end_time - start_time
                 latency_lst.append(rtp / 2)
-                throughput_lst.append(len(message) / rtp * 100)
+                throughput_lst.append(len((message)* 1000) / rtp)
 
             except socket.timeout:
                 lost+=1
+                #print("------------LOST!--------------------")
 
-        jitter = st.stdev(latency_lst)
+        if num-lost >=2:
+            jitter = st.stdev(latency_lst)
+        else:
+            jitter = 0
         for _ in range (lost):
             latency_lst.append(0)
             throughput_lst.append(0)
 
-        send_porcentage = (n - lost) / n
+        send_porcentage = (num - lost) / num
         # print('Latency list = ',latency_lst)
         # print('Throughput list = ',throughput_lst)
         # print('Lost porcentage = ',send_porcentage)        
-        print('{},{},{:f},{:f},{:f},{:f},{:f},{:f}'.format(n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst),send_porcentage,jitter))
+        print('{},{},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}'.format(n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst),send_porcentage,jitter))
 
         n+=1
         initial_size+=increment
