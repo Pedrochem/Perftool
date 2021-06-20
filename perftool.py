@@ -30,35 +30,35 @@ def tcp_server(port, address, buffer):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_address = (address, port)
-        print ("Starting up echo server  on %s port %s" % server_address)
+        # print ("Starting up echo server  on %s port %s" % server_address)
         sock.bind(server_address)
         sock.listen(backlog)
         client, address = sock.accept()
         with client:
-            print('Connected by', address)
+            # print('Connected by', address)
             while True:
-                print ("Waiting to receive message from client")
+                # print ("Waiting to receive message from client")
                 data = client.recv(buffer)
                 #time.sleep(1)
                 if not data:
                     break
-                print ("Data: %s" %data)
+                # print ("Data: %s" %data)
                 client.sendall(data)
                 print ("sent %d bytes back to %s" % (len(data), address))
 
 def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (address, port)
-    print ("Connecting to %s port %s" % server_address)
+    # print ("Connecting to %s port %s" % server_address)
     sock.connect(server_address)
 
-    print(initial_size,increment,final_size)
+    # print(initial_size,increment,final_size)
 
     n = 1
     while initial_size<=final_size:
         latency_lst = []
         throughput_lst = []
-        print('Data size = ',initial_size)
+        # print('Data size = ',initial_size)
         for i in range(num):
             try:
                 #time.sleep(1)
@@ -87,7 +87,7 @@ def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
         n+=1
         initial_size+=increment
               
-    print ("Closing connection to the server")
+    # print ("Closing connection to the server")
     sock.close()
 
 def udp_server(port, address, buffer):
@@ -102,7 +102,7 @@ def udp_server(port, address, buffer):
             if not data:
                 break
             print ("received %s bytes from %s" % (len(data), address))
-            print ("Data: %s" %data)
+            # print ("Data: %s" %data)
            
             #time.sleep(2)
             sent = sock.sendto(data, address)
@@ -141,8 +141,10 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
 
         if num-lost >=2:
             jitter = st.stdev(latency_lst)
+            media = st.mean(latency_lst)
         else:
             jitter = 0
+            media = 0
         for _ in range (lost):
             latency_lst.append(0)
             throughput_lst.append(0)
@@ -151,7 +153,7 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
         # print('Latency list = ',latency_lst)
         # print('Throughput list = ',throughput_lst)
         # print('Lost porcentage = ',send_porcentage)        
-        print('{},{},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}'.format(n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst),send_porcentage,jitter))
+        print('{},{},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}'.format(n,initial_size,st.mean(latency_lst),media, st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst),send_porcentage,jitter))
 
         n+=1
         initial_size+=increment
