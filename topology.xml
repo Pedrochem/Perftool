@@ -85,11 +85,11 @@
     </link>
     <link node1="10" node2="7">
       <iface2 id="0" name="eth0" mac="00:00:00:aa:00:1a" ip4="10.0.2.10" ip4_mask="24" ip6="2001:2::10" ip6_mask="64"/>
-      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+      <options delay="0" bandwidth="0" loss="50.0" dup="0" jitter="0" unidirectional="0"/>
     </link>
     <link node1="10" node2="8">
       <iface2 id="0" name="eth0" mac="00:00:00:aa:00:1b" ip4="10.0.2.11" ip4_mask="24" ip6="2001:2::11" ip6_mask="64"/>
-      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+      <options delay="80000" bandwidth="64000" loss="20.0" dup="0" jitter="0" unidirectional="0"/>
     </link>
     <link node1="10" node2="2">
       <iface2 id="3" name="eth3" mac="00:00:00:aa:00:1f" ip4="10.0.2.1" ip4_mask="24" ip6="2001:2::1" ip6_mask="64"/>
@@ -97,12 +97,12 @@
     </link>
     <link node1="10" node2="6">
       <iface2 id="0" name="eth0" mac="00:00:00:aa:00:20" ip4="10.0.2.12" ip4_mask="24" ip6="2001:2::12" ip6_mask="64"/>
-      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="4000" unidirectional="0"/>
     </link>
     <link node1="5" node2="2">
       <iface1 id="0" name="eth0" mac="00:00:00:aa:00:18" ip4="10.0.1.10" ip4_mask="24" ip6="2001:1::10" ip6_mask="64"/>
       <iface2 id="0" name="eth0" mac="00:00:00:aa:00:19" ip4="10.0.1.1" ip4_mask="24" ip6="2001:1::1" ip6_mask="64"/>
-      <options delay="80000" bandwidth="64000" loss="20.0" dup="0" jitter="0" unidirectional="0"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
     </link>
     <link node1="2" node2="1">
       <iface1 id="2" name="eth2" mac="00:00:00:aa:00:1c" ip4="10.0.4.1" ip4_mask="24" ip6="2001:4::1" ip6_mask="64"/>
@@ -146,7 +146,7 @@
     <configuration name="annotation a6" value="{iconcoords {59.0 135.0 198.0 208.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #C0C0FF} {width 0} {border black} {rad 25} {canvas c1}"/>
     <configuration name="annotation a7" value="{iconcoords {87.0 301.0 234.0 376.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #C0C0FF} {width 0} {border black} {rad 25} {canvas c1}"/>
     <configuration name="annotation a8" value="{iconcoords {389.0 351.0 527.0 494.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize 12} {color #08c051} {width 0} {border black} {rad 25} {canvas c1}"/>
-    <configuration name="annotation a9" value="{iconcoords {623.0 90.0 835.0 188.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize 12} {color #00c0ff} {width 0} {border black} {rad 25} {canvas c1}"/>
+    <configuration name="annotation a9" value="{iconcoords {639.0 90.0 835.0 191.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize 12} {color #00c0ff} {width 0} {border black} {rad 25} {canvas c1}"/>
   </session_metadata>
   <default_services>
     <node type="mdr">
