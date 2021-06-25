@@ -19,7 +19,7 @@ def read_args():
     parser.add_argument('-a', action="store", dest="address", type=str, required=False)
     parser.add_argument('-w', action="store", dest="interval", type=str, required=False)
     parser.add_argument('-n', action="store", dest="num", type=int, required=False)
-    parser.add_argument('-b', action="store", dest="buffer", type=int, required=True)
+    parser.add_argument('-b', action="store", dest="buffer", type=int, required=False)
     args = parser.parse_args()
     if (args.client and args.server) or (args.tcp and args.udp):
         print("Invalid args")
@@ -172,6 +172,9 @@ if __name__ == '__main__':
     interval = args.interval
     num = args.num
     buffer = args.buffer
+    if buffer == None: 
+        buffer = 131072
+
 
     if interval:
         try:
@@ -183,21 +186,21 @@ if __name__ == '__main__':
             print ('Invalid arg value for w (range)')
             sys.exit()
 
-    # print('client = ',client)
-    # print('server = ',server)
-    # print('tcp = ',tcp)
-    # print('udp = ',udp)
-    # print('port = ',port)
-    # print('address = ',address)
-    # print('interval = ',interval)
-    # print('num = ',num)
-    # print('buffer = ',buffer)
+    print('client = ',client)
+    print('server = ',server)
+    print('tcp = ',tcp)
+    print('udp = ',udp)
+    print('port = ',port)
+    print('address = ',address)
+    print('interval = ',interval)
+    print('num = ',num)
+    print('buffer = ',buffer)
 
     if server:
         if tcp:
-            tcp_server(port, address, buffer)
+            tcp_server(port, socket.gethostbyname(socket.gethostname()), buffer)
         elif udp:
-            udp_server(port, address, buffer)
+            udp_server(port, socket.gethostbyname(socket.gethostname()), buffer)
     elif client:
         if tcp:
             tcp_client(port, address, num, buffer,initial_size,increment,final_size)
