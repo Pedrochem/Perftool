@@ -138,15 +138,18 @@
   <session_metadata>
     <configuration name="annotation a1" value="{iconcoords {420.0 463.0}} {type text} {label {Server}} {labelcolor black} {fontfamily {Arial}} {fontsize {16}} {canvas c1}"/>
     <configuration name="annotation a2" value="{type text} {iconcoords {481.0 471.0}} {label {}} {canvas c1}"/>
-    <configuration name="annotation a3" value="{iconcoords {764.0 119.0}} {type text} {label {Client}} {labelcolor black} {fontfamily {Arial}} {fontsize {16}} {canvas c1}"/>
+    <configuration name="annotation a3" value="{iconcoords {764.0 119.0}} {type text} {label {Client 1}} {labelcolor black} {fontfamily {Arial}} {fontsize {16}} {canvas c1}"/>
     <configuration name="canvas c1" value="{name {Canvas1}}"/>
     <configuration name="global_options" value="interface_names=no ip_addresses=yes ipv6_addresses=no node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=yes traffic_start=0"/>
     <configuration name="annotation a4" value="{iconcoords {682.0 221.0 818.0 316.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #c0c0ff} {width 0} {border black} {rad 25} {canvas c1}"/>
-    <configuration name="annotation a5" value="{iconcoords {614.0 318.0 765.0 413.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #C0C0FF} {width 0} {border black} {rad 25} {canvas c1}"/>
+    <configuration name="annotation a5" value="{iconcoords {726.0 348.0}} {type text} {label {Client 3}} {labelcolor black} {fontfamily {Arial}} {fontsize 16} {canvas c1}"/>
     <configuration name="annotation a6" value="{iconcoords {59.0 135.0 198.0 208.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #C0C0FF} {width 0} {border black} {rad 25} {canvas c1}"/>
     <configuration name="annotation a7" value="{iconcoords {87.0 301.0 234.0 376.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #C0C0FF} {width 0} {border black} {rad 25} {canvas c1}"/>
-    <configuration name="annotation a8" value="{iconcoords {389.0 351.0 527.0 494.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize 12} {color #08c051} {width 0} {border black} {rad 25} {canvas c1}"/>
-    <configuration name="annotation a9" value="{iconcoords {639.0 90.0 835.0 191.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize 12} {color #00c0ff} {width 0} {border black} {rad 25} {canvas c1}"/>
+    <configuration name="annotation a8" value="{iconcoords {389.0 351.0 527.0 494.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #08c051} {width 0} {border black} {rad 25} {canvas c1}"/>
+    <configuration name="annotation a9" value="{iconcoords {639.0 90.0 835.0 191.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {color #00c0ff} {width 0} {border black} {rad 25} {canvas c1}"/>
+    <configuration name="annotation a10" value="{iconcoords {643.0 205.0 852.0 317.0}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize 12} {color #00c0ff} {width 0} {border black} {rad 25} {canvas c1}"/>
+    <configuration name="annotation a11" value="{iconcoords {778.0 229.0}} {type text} {label {Client 2}} {labelcolor black} {fontfamily {Arial}} {fontsize 16} {canvas c1}"/>
+    <configuration name="annotation a12" value="{iconcoords {584 322 808 444}} {type rectangle} {label {}} {labelcolor black} {fontfamily {Arial}} {fontsize 12} {color #00c0ff} {width 0} {border black} {rad 25} {canvas c1}"/>
   </session_metadata>
   <default_services>
     <node type="mdr">
