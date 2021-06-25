@@ -12,6 +12,10 @@ backlog = 5
 def read_args():
     """Read the necessary entries to run the program.
 
+        Return
+        ----------
+        Object with all arguments to run the program.
+
         Utilization
         ----------
         read_args()
