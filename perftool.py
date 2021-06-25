@@ -10,7 +10,7 @@ import statistics as st
 backlog = 5
 
 def read_args():
-     """Read the necessary entries to run the program.
+    """Read the necessary entries to run the program.
 
         Utilization
         ----------
@@ -33,7 +33,7 @@ def read_args():
     return parser.parse_args()
 
 def tcp_server(port, address, buffer):
-    """Create a socket TCP server to receive packages from client.
+    """Create a socket TCP echo server to receive packets from client.
 
         Parameters
         ----------
@@ -73,7 +73,7 @@ def tcp_server(port, address, buffer):
                 print ("sent %d bytes back to %s" % (len(data), address))
 
 def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
-    """Create a socket TCP client to send packages to server.
+    """Create a socket TCP client to send packets to server.
 
         Parameters
         ----------
@@ -84,19 +84,19 @@ def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
             The server IP address.
 
         num: int, required
-            Times the package will be sent to the server.
+            Times the packet will be sent to the server.
 
         buffer: int, required
             Buffer size for sending data.
 
         initial_size: int, required
-            Initial package size.
+            Initial packet size.
 
         increment: int, required
-            Package size increment value.
+            packet size increment value.
 
         final_size: int, required
-            Final package size.
+            Final packet size.
 
         Utilization
         ------
@@ -146,7 +146,7 @@ def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
     sock.close()
 
 def udp_server(port, address, buffer):
-    """Create a socket UDP server to receive packages from client.
+    """Create a socket UDP echo server to receive packets from client.
 
         Parameters
         ----------
@@ -179,7 +179,7 @@ def udp_server(port, address, buffer):
             print ("sent %s bytes back to %s" % (sent, address))
 
 def udp_client(port, address, num, buffer, initial_size, increment, final_size):
-    """Create a socket UDP client to send packages to server.
+    """Create a socket UDP client to send packets to server.
 
         Parameters
         ----------
@@ -190,19 +190,19 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
             The server IP address.
 
         num: int, required
-            Times the package will be sent to the server.
+            Times the packet will be sent to the server.
 
         buffer: int, required
             Buffer size for sending data.
 
         initial_size: int, required
-            Initial package size.
+            Initial packet size.
 
         increment: int, required
-            Package size increment value.
+            packet size increment value.
 
         final_size: int, required
-            Final package size.
+            Final packet size.
 
         Utilization
         ------
@@ -283,16 +283,17 @@ if __name__ == '__main__':
         except Exception as e:
             print ('Invalid arg value for w (range)')
             sys.exit()
-
-    print('client = ',client)
-    print('server = ',server)
-    print('tcp = ',tcp)
-    print('udp = ',udp)
-    print('port = ',port)
-    print('address = ',address)
-    print('interval = ',interval)
-    print('num = ',num)
-    print('buffer = ',buffer)
+    
+    # Uncomment theese lines if it is necessary checking param values
+    # print('client = ',client)
+    # print('server = ',server)
+    # print('tcp = ',tcp)
+    # print('udp = ',udp)
+    # print('port = ',port)
+    # print('address = ',address)
+    # print('interval = ',interval)
+    # print('num = ',num)
+    # print('buffer = ',buffer)
 
     if server:
         if tcp:
