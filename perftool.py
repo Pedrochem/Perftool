@@ -10,6 +10,12 @@ import statistics as st
 backlog = 5
 
 def read_args():
+     """Read the necessary entries to run the program.
+
+        Utilization
+        ----------
+        read_args()
+    """
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-c', action="store_true", dest="client")
     parser.add_argument('-s', action="store_true", dest="server")
@@ -27,70 +33,136 @@ def read_args():
     return parser.parse_args()
 
 def tcp_server(port, address, buffer):
+    """Create a socket TCP server to receive packages from client.
+
+        Parameters
+        ----------
+        port : int, required
+            The port the server will be listening on.
+
+        address: str, required
+            The server IP address.
+
+        buffer: int, required
+            Buffer size for receiving data.
+
+        Utilization
+        ------
+        tcp_server(24, 10.0.1.10, 1024)
+    """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_address = (address, port)
-        # print ("Starting up echo server  on %s port %s" % server_address)
+
+        # Starting up echo server
         sock.bind(server_address)
         sock.listen(backlog)
+        
         client, address = sock.accept()
         with client:
-            # print('Connected by', address)
+            # Connected by some client
             while True:
-                # print ("Waiting to receive message from client")
+                # Waiting to receive data from client
                 data = client.recv(buffer)
-                #time.sleep(1)
+            
                 if not data:
                     break
-                # print ("Data: %s" %data)
+
+                # Sending data back to client
                 client.sendall(data)
                 print ("sent %d bytes back to %s" % (len(data), address))
 
 def tcp_client(port, address, num, buffer, initial_size, increment, final_size):
+    """Create a socket TCP client to send packages to server.
+
+        Parameters
+        ----------
+        port : int, required
+            The port the server will be listening on.
+
+        address: str, required
+            The server IP address.
+
+        num: int, required
+            Times the package will be sent to the server.
+
+        buffer: int, required
+            Buffer size for sending data.
+
+        initial_size: int, required
+            Initial package size.
+
+        increment: int, required
+            Package size increment value.
+
+        final_size: int, required
+            Final package size.
+
+        Utilization
+        ------
+        tcp_client(24, 10.0.1.10, 10, 1024, 1000, 50, 2000)
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (address, port)
-    # print ("Connecting to %s port %s" % server_address)
+    
+    # Connecting to server
     sock.connect(server_address)
-
-    # print(initial_size,increment,final_size)
 
     n = 1
     while initial_size<=final_size:
         latency_lst = []
         throughput_lst = []
-        # print('Data size = ',initial_size)
+
         for i in range(num):
             try:
-                #time.sleep(1)
                 message = 'a' * initial_size
-                # print ("Sending %s" % message)
+                
+                # Sending data to server
                 start_time = time.time() * 1000
                 sock.sendall(message.encode('utf-8'))
+                
                 amount_received = 0
                 amount_expected = len(message)
                 while amount_received < amount_expected:
+                    # Receiving data from server
                     data = sock.recv(buffer)
                     amount_received += len(data)
-                    # print('Received = ',amount_received)
-                    # print ("Received: %s" % data)
+
                 end_time = time.time() * 1000
                 rtp = end_time - start_time
                 latency_lst.append(rtp / 2)
                 throughput_lst.append(len((message)* 1000) / rtp)
+                
             except socket.error as e:
                 print ("Socket error: %s" %str(e))
             except Exception as e:
                 print ("Other exception: %s" %str(e))
-        # print(latency_lst)
-        # print(throughput_lst)
+        
         print('%d, %d, %.2f, %.2f, %.2f, %.2f' % (n,initial_size,st.mean(latency_lst), st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst)))
         n+=1
         initial_size+=increment
               
-    # print ("Closing connection to the server")
+    # Closing connection to the server
     sock.close()
 
 def udp_server(port, address, buffer):
+    """Create a socket UDP server to receive packages from client.
+
+        Parameters
+        ----------
+        port : int, required
+            The port the server will be listening on.
+
+        address: str, required
+            The server IP address.
+
+        buffer: int, required
+            Buffer size for receiving data.
+
+        Utilization
+        ------
+        udp_server(24, 10.0.1.10, 1024)
+    """
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
         server_address = (address, port)
         print ("Starting up echo server on %s port %s" % server_address)
@@ -102,34 +174,62 @@ def udp_server(port, address, buffer):
             if not data:
                 break
             print ("received %s bytes from %s" % (len(data), address))
-            # print ("Data: %s" %data)
            
-            #time.sleep(2)
             sent = sock.sendto(data, address)
             print ("sent %s bytes back to %s" % (sent, address))
 
 def udp_client(port, address, num, buffer, initial_size, increment, final_size):
+    """Create a socket UDP client to send packages to server.
+
+        Parameters
+        ----------
+        port : int, required
+            The port the server will be listening on.
+
+        address: str, required
+            The server IP address.
+
+        num: int, required
+            Times the package will be sent to the server.
+
+        buffer: int, required
+            Buffer size for sending data.
+
+        initial_size: int, required
+            Initial package size.
+
+        increment: int, required
+            Package size increment value.
+
+        final_size: int, required
+            Final package size.
+
+        Utilization
+        ------
+        udp_client(24, 10.0.1.10, 10, 1024, 1000, 50, 2000)
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     server_address = (address, port)
-    # print ("Connecting to %s port %s" % server_address)
 
     n = 1
     while(initial_size<=final_size):   
         latency_lst = []
         throughput_lst = []
         lost = 0
-        # print('Data size = ',initial_size)
+        
         for i in range(num): 
             try:
                 message = 'a' * initial_size
-                #print ("Sending %s" % message)
+
+                # Sending data to server
                 start_time = time.time() * 1000
                 sent = sock.sendto(message.encode('utf-8'), server_address)
                 sock.settimeout(1)
 
+                # Receiving data from server
                 data, server = sock.recvfrom(buffer)
-                # print ("Received %s" % data)
+                
                 end_time = time.time() * 1000
                 rtp = end_time - start_time
                 latency_lst.append(rtp / 2)
@@ -137,8 +237,8 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
 
             except socket.timeout:
                 lost+=1
-                #print("------------LOST!--------------------")
 
+        # Calculating jitter and average
         if num-lost >=2:
             jitter = st.stdev(latency_lst)
             media = st.mean(latency_lst)
@@ -149,15 +249,13 @@ def udp_client(port, address, num, buffer, initial_size, increment, final_size):
             latency_lst.append(0)
             throughput_lst.append(0)
 
-        send_porcentage = (num - lost) / num
-        # print('Latency list = ',latency_lst)
-        # print('Throughput list = ',throughput_lst)
-        # print('Lost porcentage = ',send_porcentage)        
+        send_porcentage = (num - lost) / num        
         print('{},{},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}'.format(n,initial_size,st.mean(latency_lst),media, st.stdev(latency_lst),st.mean(throughput_lst), st.stdev(throughput_lst),send_porcentage,jitter))
 
         n+=1
         initial_size+=increment
-    # print ("Closing connection to the server")
+    
+    # Closing connection to the server
     sock.close()
 
 if __name__ == '__main__':
@@ -207,9 +305,3 @@ if __name__ == '__main__':
         elif udp:
             udp_client(port, address, num, buffer,initial_size,increment,final_size)
             
-
-
-
-
-
-    
